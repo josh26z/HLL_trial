@@ -1,8 +1,12 @@
 def compute_risk(signals):
-    structural_score = signals["structural_delta"]
-    role_score = signals["role_delta"] * 1.5
-    session_score = signals["session_delta"]
 
-    unified_risk = structural_score + role_score + session_score
+    structural_score = signals["structural_card"] / 50
+    role_score = signals["role_card"] * 2
+    session_score = signals["session_growth"] / 20
 
-    return unified_risk
+    risk = structural_score + role_score + session_score
+
+    # Normalize to 0-1 range
+    risk = min(risk / 10, 1.0)
+
+    return risk

@@ -3,9 +3,6 @@ from src.hll_core import HyperLogLog
 
 class HLLManager:
     def __init__(self):
-        self.structural_hll = HyperLogLog()
-        self.role_hll = HyperLogLog()
-        self.malicious_hll = HyperLogLog()
         self.session_hll = {}
 
     def get_session_hll(self, user_id):

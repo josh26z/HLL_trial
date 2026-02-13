@@ -1,37 +1,36 @@
+from src.hll_core import HyperLogLog
+
+
 class MonitoringEngine:
     def __init__(self, hll_manager):
         self.hll_manager = hll_manager
 
-        self.structural_baseline = 0
-        self.role_baseline = 0
-        self.session_baseline = {}
-
     def process(self, user_id, structural_features, role_features):
-        # Structural
+
+        # Per-prompt structural HLL
+        temp_structural = HyperLogLog()
         for f in structural_features:
-            self.hll_manager.structural_hll.add(f)
+            temp_structural.add(f)
+        structural_card = temp_structural.estimate()
 
-        structural_card = self.hll_manager.structural_hll.estimate()
-        structural_delta = structural_card - self.structural_baseline
-
-        # Role
+        # Per-prompt role HLL
+        temp_role = HyperLogLog()
         for f in role_features:
-            self.hll_manager.role_hll.add(f)
+            temp_role.add(f)
+        role_card = temp_role.estimate()
 
-        role_card = self.hll_manager.role_hll.estimate()
-        role_delta = role_card - self.role_baseline
-
-        # Session
+        # Session HLL (cumulative but growth-based)
         session_hll = self.hll_manager.get_session_hll(user_id)
+        previous_session = session_hll.estimate()
 
         for f in structural_features:
             session_hll.add(f)
 
-        session_card = session_hll.estimate()
-        session_delta = session_card - self.session_baseline.get(user_id, 0)
+        new_session = session_hll.estimate()
+        session_growth = new_session - previous_session
 
         return {
-            "structural_delta": structural_delta,
-            "role_delta": role_delta,
-            "session_delta": session_delta,
+            "structural_card": structural_card,
+            "role_card": role_card,
+            "session_growth": session_growth,
         }

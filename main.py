@@ -1,3 +1,5 @@
+print("CLEAN VERSION RUNNING")
+
 from src.preprocessing import canonicalize
 from src.feature_extraction import extract_structural_features, extract_role_features
 from src.hll_manager import HLLManager
@@ -24,10 +26,13 @@ def main():
 
         risk_score = compute_risk(signals)
 
-        decision = decide(risk_score)
+        decision = decide(risk_score,prompt)
 
-        print(f"\nRisk Score: {risk_score:.2f}")
-        print(f"Decision: {decision}\n")
+        print("\n--- DEBUG ---")
+        print("Signals:", signals)
+        print("Risk Score:", round(risk_score, 3))
+        print("Decision:", decision)
+        print("-------------\n")
 
 
 if __name__ == "__main__":
