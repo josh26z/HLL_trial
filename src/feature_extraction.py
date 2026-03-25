@@ -13,14 +13,17 @@ def extract_structural_features(text: str):
 
 def extract_role_features(text: str):
     role_keywords = [
-        "system",
-        "developer",
-        "override",
-        "ignore",
-        "policy",
-        "rules",
-        "admin",
-        "internal"
-    ]
+    r"developer\s*mode",
+    r"admin\s*(mode|access|control)",
+    r"reveal.*policy",
+    r"ignore.*policy",
+    r"ignore.*instruction",
+    r"bypass.*safety",
+    r"bypass.*filter",
+    r"override.*system",
+    r"system\s*prompt",
+    r"jailbreak",
+    r"act\s*as\s*system",
+]
 
     return [word for word in role_keywords if word in text]
